@@ -1,0 +1,29 @@
+name: Run AzureML Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Azure ML SDK
+        run: pip install azure-ai-ml azure-identity
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Run pipeline submission script
+        run: python mlops/submit_pipeline.py
